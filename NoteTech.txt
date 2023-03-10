@@ -1,0 +1,13 @@
+-- Teknologi library JS yang digunakan pada project ini
+
+BACKEND (api folder)
+
+-bcrypt : digunakan untuk mengamankan data dengan menggunakan algoritma hashing, digunakan untuk menyimpan password, memverifikasi data, dan enkripsi data.
+-cookieParser : digunakan untuk memanipulasi cookie dalam aplikasi web dan untuk mengatur nilai cookie dan menghapus cookie
+-cors : digunakan untuk mengakses sumber daya dari domain lain tanpa harus mengubah konfigurasi server
+-express : digunakan sebagai framework di project ini, tujuannya untuk mengatur routing, middleware, templating, database dan membangun aplikasi web dan api
+-jsonwebtoken : digunakan untuk authentikasi, menyimpan informasi pengguna dan autorisasi
+-moment : digunakan untuk memanipulasi, mengubah dan menampilkan tanggal dan waktu
+-multer : digunakan untuk membantu dalam melakukan upload file berupa gambar
+-nodemon : digunakan untuk memantau perubahan pada kode secara otomatis menjalankan ulang
+-pg : digunakan sebagai database
