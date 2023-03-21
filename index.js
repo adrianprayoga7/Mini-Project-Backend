@@ -2,15 +2,30 @@ import express from 'express';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import postRoutes from './routes/posts.js';
+import subforumRoutes from './routes/subforum.js';
 import commentRoutes from './routes/comments.js';
 import likeRoutes from './routes/likes.js';
 import relationshipRoutes from './routes/relationships.js';
-// import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import multer from 'multer';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import categoryRoutes from './routes/forumcategories.js';
 
+//inisialisasi menggunakan socket.io
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:3000',
+  },
+});
+
+io.on('connection', (socket) => {
+  io.emit('firstEvent', 'Hello this is test!');
+  socket.on('disconnect', () => {});
+});
 
 //middlewares
 app.use((req, res, next) => {
@@ -56,8 +71,10 @@ app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/relationships', relationshipRoutes);
+app.use('/api/subforum', subforumRoutes);
+app.use('/api/forumcategories', categoryRoutes);
 
 //mengatur port
-app.listen(8800, () => {
+httpServer.listen(8800, () => {
   console.log('API working!');
 });

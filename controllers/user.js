@@ -4,9 +4,10 @@ import jwt from 'jsonwebtoken';
 //FUNGSI UNTUK MENDAPATKAN USER LAIN
 export const getUser = (req, res) => {
   const userId = req.params.userId;
+  const q = 'SELECT * FROM users WHERE id=$1';
 
   //dengan melakukan fungsi select berdasarkan id
-  pool.query('SELECT * FROM users WHERE id = $1', [userId], (err, data) => {
+  pool.query(q, [userId], (err, data) => {
     //jika error maka respon status 500
     if (err) return res.status(500).json(err);
     //fungsi untuk menghapus properti password dari data rows
@@ -27,14 +28,23 @@ export const updateUser = (req, res) => {
     if (err) return res.status(403).json('Token is not valid!');
 
     //fungsi update berdasarkan inputan user
-    const { name, city, website, coverPic, profilePic } = req.body;
+    //query database
+    const q =
+      'UPDATE users SET name=$1, city=$2, website=$3, "profilePic"=$4, "coverPic"=$5 WHERE id=$6';
 
     pool.query(
-      'UPDATE users SET name = $1, city = $2, website = $3, "profilePic"= $4, "coverPic"= $5 WHERE id=$6',
-      [name[0], city[0], website[0], coverPic, profilePic, userInfo.id],
+      q,
+      [
+        req.body.name[0],
+        req.body.city[0],
+        req.body.website[0],
+        req.body.coverPic,
+        req.body.profilePic,
+        userInfo.id,
+      ],
       (err, data) => {
         //jika gagal mengembalikan respon 500
-        if (err) return res.status(500).json(err);
+        if (err) res.status(500).json(err);
         // jika berhasil bahwa data lebih dari 0 maka respon akan mengembalikan pesan updated
         if (data.rowCount > 0) return res.json('Updated!');
         //jika data tidak lebih dari 0 maka respon akan mengembalikan status 403

@@ -2,7 +2,7 @@ import express from 'express';
 import {
   getComments,
   addComment,
-  // deleteComment,
+  deleteComment,
 } from '../controllers/comment.js';
 
 //digunakan untuk membuat rute
@@ -12,6 +12,6 @@ const router = express.Router();
 //tujuannya untuk merespon apa yang diminta user dari sisi client
 router.get('/', getComments);
 router.post('/', addComment);
-// router.delete('/:id', deleteComment);
+router.delete('/:id', deleteComment);
 
 export default router;

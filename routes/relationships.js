@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-//routing setiap fungsi dari auth.js
+//routing setiap fungsi dari relationship.js
 //tujuannya untuk merespon apa yang diminta user dari sisi client
 router.get('/', getRelationships);
 router.post('/', addRelationship);

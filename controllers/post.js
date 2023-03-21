@@ -7,6 +7,7 @@ export const getPosts = (req, res) => {
   //digunakan untuk mengambil nilai dari query string berdasarkan userId
   const userId = req.query.userId;
 
+  // console.log(userId);
   //untuk cek user login atau tidak dilihat dari akses token
   const token = req.cookies.accessToken;
   if (!token) return res.status(401).json('Not logged in!');
@@ -15,12 +16,13 @@ export const getPosts = (req, res) => {
   jwt.verify(token, 'secretkey', (err, userInfo) => {
     if (err) return res.status(403).json('Token is not valid!');
 
+    // console.log(userId ? 'there is' : 'not');
     //userId !== undefined untuk memastikan bahwa userId yang dimasukan tidak undefined
     //tujuan query ini untuk mengambil semua data post dari user yang dipilih dan juga user yang diikuti oleh user lain
     const q =
       userId !== 'undefined'
-        ? `SELECT p.*, u.id AS "userId", name, "profilePic" FROM posts p JOIN users u ON (u.id = p."userId") WHERE p."userId" = $1 ORDER BY p."createdAt" DESC`
-        : `SELECT p.*, u.id AS "userId", name, "profilePic" FROM posts p JOIN users u ON (u.id = p."userId") LEFT JOIN relationships AS r ON (p."userId" = r."followedUserId") WHERE r."followerUserId" = $1 OR p."userId" = $2 ORDER BY p."createdAt" DESC`;
+        ? `SELECT p.*, u.id AS "userId", name, "profilePic", subforum FROM posts p JOIN users u ON (u.id = p."userId") JOIN sub_forum ON (p."subforumId" = sub_forum.id) WHERE p."userId" = $1 ORDER BY p."createdAt" DESC`
+        : `SELECT p.*, u.id AS "userId", name, "profilePic", subforum FROM posts p JOIN users u ON (u.id = p."userId") LEFT JOIN relationships AS r ON (p."userId" = r."followedUserId") JOIN sub_forum ON (p."subforumId" = sub_forum.id) WHERE r."followerUserId" = $1 OR p."userId" = $2 ORDER BY p."createdAt" DESC`;
 
     //fungsi ini bertujuan apakah userId yang dimasukan sama dengan userInfoId atau tidak
     const values =
@@ -46,12 +48,12 @@ export const addPost = (req, res) => {
 
     //fungsi untuk menambahkan data baru ke dalam tabel posts
     const values = [req.body.desc, req.body.img, userInfo.id];
-
     pool.query(
       'INSERT INTO posts("desc", img, "userId") VALUES ( $1, $2, $3) RETURNING *',
       [...values],
       (err, data) => {
         //mengembalikan nilai 500 jika error
+        // console.log(err);
         if (err) return res.status(500).json(err);
         //jika berhasil maka mengembalikan nilai 200
         return res.status(200).json('Post has been created');
